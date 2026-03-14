@@ -5,15 +5,18 @@
 ![Spark](https://img.shields.io/badge/Spark-SQL-red)
 ![HDFS](https://img.shields.io/badge/HDFS-Storage-yellow)
 ![Dataset](https://img.shields.io/badge/Dataset-35M%2B%20Records-green)
+
 ![Project Overview](docs/mermaid-diagram_2.png)
-An end-to-end **offline data engineering pipeline** simulating a real-world e-commerce analytics platform.
 
-The project includes:
+An end-to-end **offline data engineering pipeline** simulating a real-world **e-commerce analytics platform**.
 
-* large-scale **synthetic data generation**
-* **layered data warehouse architecture**
-* **Spark / Hive analytical processing**
-* **BI dashboard visualization**
+This project demonstrates a complete **data engineering workflow**, including:
+
+- large-scale **synthetic data generation**
+- **layered data warehouse architecture**
+- **Spark / Hive analytical processing**
+- **business metric aggregation**
+- **BI dashboard visualization**
 
 Dataset generator:
 
@@ -28,8 +31,6 @@ Dataset scale:
 # System Architecture
 
 ![System Architecture](docs/mermaid-diagram.png)
-
-This project simulates a simplified **data engineering analytics platform**.
 
 Pipeline overview:
 
@@ -53,28 +54,28 @@ This architecture follows the **common offline data warehouse pattern used in in
 
 # Dataset
 
-The dataset is generated using a custom **E-commerce Data Simulator**.
+The dataset used in this project is generated using a custom **E-commerce Data Simulator**.
 
 The simulator produces realistic e-commerce transaction data including:
 
-* users
-* shops
-* SKUs
-* orders
-* order items
-* refunds
+- users
+- shops
+- SKUs
+- orders
+- order items
+- refunds
 
 ---
 
 # Dataset Scale
 
-| Entity      | Count       |
-| ----------- | ----------- |
-| Orders      | 10,000,000  |
+| Entity | Count |
+|------|------|
+| Orders | 10,000,000 |
 | Order Items | ~25,000,000 |
-| Users       | 120,000     |
-| Shops       | 8,000       |
-| SKUs        | 35,000      |
+| Users | 120,000 |
+| Shops | 8,000 |
+| SKUs | 35,000 |
 
 Total records processed exceed **35 million rows**.
 
@@ -82,7 +83,7 @@ Total records processed exceed **35 million rows**.
 
 # Data Generation Configuration
 
-Example configuration:
+Example configuration used for generating the dataset:
 
 ```
 order_cnt = 10_000_000
@@ -96,20 +97,20 @@ batch_size = 300_000
 workers = 6
 ```
 
-The simulator supports **parallel data generation**, enabling efficient generation of tens of millions of records.
+The generator supports **parallel data generation**, enabling efficient production of tens of millions of records.
 
 ---
 
 # Tech Stack
 
-| Layer           | Technology            |
-| --------------- | --------------------- |
-| Data Generation | Python                |
-| Storage         | Hadoop / HDFS         |
-| Data Warehouse  | Hive                  |
-| Query Engine    | Hive SQL / Spark      |
-| Data Modeling   | ODS → DWD → DWS → ADS |
-| Visualization   | Python + Pyecharts    |
+| Layer | Technology |
+|------|------|
+| Data Generation | Python |
+| Storage | Hadoop / HDFS |
+| Data Warehouse | Hive |
+| Query Engine | Hive SQL / Spark SQL |
+| Data Modeling | ODS → DWD → DWS → ADS |
+| Visualization | Python + Pyecharts |
 
 ---
 
@@ -125,7 +126,7 @@ ODS → DWD → DWS → ADS
 
 ## ODS Layer
 
-Raw transactional ingestion layer.
+Raw transactional data ingestion layer.
 
 Example tables:
 
@@ -202,9 +203,9 @@ ads_trade_overview
 
 Benefits:
 
-* efficient incremental loading
-* reduced scan cost
-* faster analytical queries
+- efficient incremental loading
+- reduced scan cost
+- faster analytical queries
 
 ---
 
@@ -214,12 +215,12 @@ The BI layer is implemented using **Python + Pyecharts**.
 
 Key metrics visualized:
 
-* Daily GMV Trend
-* Daily Order Count
-* Daily User Count
-* Refund Amount Trend
-* Top Categories by GMV
-* Top Shops by GMV
+- Daily GMV Trend
+- Daily Order Count
+- Daily User Count
+- Refund Amount Trend
+- Top Categories by GMV
+- Top Shops by GMV
 
 ---
 
@@ -278,12 +279,18 @@ dashboard.html
 ```
 ecommerce-data-warehouse
 │
+├── sql
+│   ├── ads
+│   ├── dwd
+│   └── dws
+│
 ├── build_dashboard.py
 ├── dashboard.html
 ├── README.md
 │
 └── docs
-    ├── system_architecture.png
+    ├── mermaid-diagram.png
+    ├── mermaid-diagram_2.png
     └── dashboard_preview_1.png
 ```
 
@@ -299,15 +306,15 @@ https://github.com/learner2638/ecommerce-data-simulator
 
 ---
 
-### 2 Load Data into HDFS
+### 2 Upload Data to HDFS
 
-Upload generated CSV files into HDFS and register Hive tables.
+Upload generated CSV files to HDFS and create corresponding Hive tables.
 
 ---
 
 ### 3 Run Data Warehouse Pipeline
 
-Execute SQL pipeline:
+Execute SQL scripts sequentially:
 
 ```
 ODS → DWD → DWS → ADS
@@ -324,7 +331,7 @@ Spark SQL
 
 ### 4 Export BI Data
 
-Export ADS tables to CSV.
+Export ADS tables to CSV format.
 
 ---
 
@@ -355,10 +362,10 @@ This enables efficient generation of **tens of millions of records**.
 
 ### Data Volume
 
-| Dataset       | Size |
-| ------------- | ---- |
-| Orders        | 10M  |
-| Order Items   | 25M  |
+| Dataset | Size |
+|------|------|
+| Orders | 10M |
+| Order Items | 25M |
 | Total Records | ~35M |
 
 ---
@@ -373,18 +380,18 @@ The generated dataset occupies **multiple gigabytes**, depending on storage form
 
 This project demonstrates core **data engineering skills**:
 
-* large-scale synthetic data generation
-* offline data warehouse architecture
-* Hive-based analytical processing
-* layered warehouse modeling
-* BI visualization development
-* end-to-end analytics pipeline design
+- large-scale synthetic data generation
+- offline data warehouse architecture
+- Hive-based analytical processing
+- layered warehouse modeling
+- BI visualization development
+- end-to-end analytics pipeline design
 
 ---
 
 # Future Improvements
 
-Possible enhancements:
+Possible future enhancements include:
 
 ### Real-Time Data Pipeline
 
@@ -394,7 +401,7 @@ Flink
 Spark Streaming
 ```
 
-### Query Engine
+### Query Engine Integration
 
 ```
 Presto
@@ -408,7 +415,7 @@ ClickHouse
 Apache Airflow
 ```
 
-### Advanced BI Platforms
+### Advanced BI Platform
 
 ```
 Apache Superset
@@ -429,8 +436,7 @@ Docker Compose
 
 The dataset used in this project is generated using the custom **E-commerce Data Simulator** developed by the author.
 
----
-
+https://github.com/learner2638/ecommerce-data-simulator
 # Author
 
 Developed as part of a **data engineering learning and experimentation process**, focusing on building a simplified end-to-end analytics pipeline.

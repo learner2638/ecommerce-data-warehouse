@@ -9,6 +9,7 @@
 ![Project Overview](docs/mermaid-diagram_2.png)
 
 An end-to-end offline data engineering pipeline simulating a real-world e-commerce analytics platform.
+This project is enhanced with data skew optimization, data quality validation, metric standardization, partition design, and workflow scheduling to simulate real-world data warehouse engineering practices.
 
 This project demonstrates a complete data engineering workflow including:
 

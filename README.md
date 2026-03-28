@@ -8,23 +8,21 @@
 
 ![Project Overview](docs/mermaid-diagram_2.png)
 
-An end-to-end **offline data engineering pipeline** simulating a real-world **e-commerce analytics platform**.
+An end-to-end offline data engineering pipeline simulating a real-world e-commerce analytics platform.
 
-This project demonstrates a complete **data engineering workflow**, including:
+This project demonstrates a complete data engineering workflow including:
 
-- large-scale **synthetic data generation**
-- **layered data warehouse architecture**
-- **Spark / Hive analytical processing**
-- **business metric aggregation**
-- **BI dashboard visualization**
+- large-scale synthetic data generation
+- layered data warehouse architecture
+- Spark / Hive analytical processing
+- business metric aggregation
+- BI dashboard visualization
 
-Dataset generator:
-
+Dataset generator:  
 https://github.com/learner2638/ecommerce-data-simulator
 
-Dataset scale:
-
-**10M Orders | 25M Order Items | 35M+ Records**
+Dataset scale:  
+10M Orders | 25M Order Items | 35M+ Records
 
 ---
 
@@ -32,31 +30,27 @@ Dataset scale:
 
 ![System Architecture](docs/mermaid-diagram.png)
 
-Pipeline overview:
+Synthetic Data Generator  
+↓  
+ODS Layer (Raw Data)  
+↓  
+DWD Layer (Detail Fact Tables)  
+↓  
+DWS Layer (Aggregated Metrics)  
+↓  
+ADS Layer (Business Analytics)  
+↓  
+BI Dashboard  
 
-```
-Synthetic Data Generator
-        ↓
-ODS Layer (Raw Data)
-        ↓
-DWD Layer (Detail Fact Tables)
-        ↓
-DWS Layer (Aggregated Metrics)
-        ↓
-ADS Layer (Business Analytics)
-        ↓
-BI Dashboard
-```
-
-This architecture follows the **common offline data warehouse pattern used in industry systems**.
+This architecture follows the standard offline data warehouse pattern used in industry systems.
 
 ---
 
 # Dataset
 
-The dataset used in this project is generated using a custom **E-commerce Data Simulator**.
+The dataset is generated using a custom E-commerce Data Simulator.
 
-The simulator produces realistic e-commerce transaction data including:
+The simulator produces realistic data including:
 
 - users
 - shops
@@ -77,27 +71,19 @@ The simulator produces realistic e-commerce transaction data including:
 | Shops | 8,000 |
 | SKUs | 35,000 |
 
-Total records processed exceed **35 million rows**.
+Total records exceed 35 million rows.
 
 ---
 
 # Data Generation Configuration
 
-Example configuration used for generating the dataset:
-
-```
-order_cnt = 10_000_000
-user_cnt = 120_000
-shop_cnt = 8_000
-sku_cnt = 35_000
-
-p_refund_given_paid = 0.18
-
-batch_size = 300_000
-workers = 6
-```
-
-The generator supports **parallel data generation**, enabling efficient production of tens of millions of records.
+order_cnt = 10_000_000  
+user_cnt = 120_000  
+shop_cnt = 8_000  
+sku_cnt = 35_000  
+p_refund_given_paid = 0.18  
+batch_size = 300_000  
+workers = 6  
 
 ---
 
@@ -116,111 +102,156 @@ The generator supports **parallel data generation**, enabling efficient producti
 
 # Data Warehouse Design
 
-The warehouse follows a **four-layer modeling strategy**:
-
-```
 ODS → DWD → DWS → ADS
-```
 
 ---
 
 ## ODS Layer
 
-Raw transactional data ingestion layer.
-
-Example tables:
-
-```
-ods_orders
-ods_order_items
-ods_user_dim
-ods_shop_dim
-ods_sku_dim
-```
+ods_orders  
+ods_order_items  
+ods_user_dim  
+ods_shop_dim  
+ods_sku_dim  
 
 ---
 
 ## DWD Layer
 
-Cleaned and standardized detail-level fact tables.
-
-Example tables:
-
-```
-dwd_trade_order
-dwd_trade_order_detail
-dwd_trade_refund_detail
-```
+dwd_trade_order  
+dwd_trade_order_detail  
+dwd_trade_refund_detail  
 
 ---
 
 ## DWS Layer
 
-Aggregated service layer providing analytical metrics.
-
-Example tables:
-
-```
-dws_trade_day_summary
-dws_trade_category_day_summary
-dws_trade_shop_day_summary
-```
+dws_trade_day_summary  
+dws_trade_category_day_summary  
+dws_trade_shop_day_summary  
 
 ---
 
 ## ADS Layer
 
-Application-facing analytical tables used by BI systems.
+ads_trade_overview  
+ads_trade_top_category  
+ads_trade_top_shop  
 
-Example tables:
+---
 
-```
-ads_trade_overview
-ads_trade_top_category
-ads_trade_top_shop
-```
+# 🚀 Engineering Enhancements
 
-These tables power the BI dashboard.
+These enhancements simulate real-world data warehouse engineering practices beyond basic ETL pipelines.
+
+## 1. Data Skew Optimization
+
+- salted two-stage aggregation  
+- broadcast join (MapJoin)  
+- hot key split strategy  
+
+Effect:
+
+- reduced long-tail tasks  
+- improved parallelism  
+- more stable execution  
+
+---
+
+## 2. Partition Design
+
+dt = substr(created_time, 1, 10)
+
+Benefits:
+
+- partition pruning  
+- incremental processing (T+1)  
+- efficient backfill  
+
+---
+
+## 3. Metric Definition
+
+Core metrics include:
+
+- GMV  
+- order_cnt  
+- user_cnt  
+- total_paid  
+- total_refund  
+
+Ensures:
+
+- consistency  
+- traceability  
+- interpretability  
+
+---
+
+## 4. Data Quality Framework
+
+Includes:
+
+- uniqueness check (order_id)  
+- not-null validation  
+- business rule validation  
+- time logic validation  
+- ODS ↔ DWD reconciliation  
+
+Output table:
+
+ads_data_quality_report_prod  
+
+Provides:
+
+- unified monitoring  
+- early anomaly detection  
+- improved reliability  
+
+---
+
+## 5. Workflow Scheduling
+
+ODS → DWD → DWS → ADS → Dashboard  
+
+Features:
+
+- dependency control  
+- failure retry  
+- automated scheduling  
+
+---
+
+## Summary
+
+The project evolves from:
+
+a basic ETL demo  
+
+to:
+
+a production-oriented data warehouse system with performance optimization, data governance, and workflow orchestration
 
 ---
 
 # Partition Strategy
 
-Warehouse tables are partitioned by date.
-
-```
 PARTITIONED BY (dt)
-```
-
-Example structure:
-
-```
-ads_trade_overview
- └── dt=2024-07-01
- └── dt=2024-07-02
- └── dt=2024-07-03
-```
-
-Benefits:
-
-- efficient incremental loading
-- reduced scan cost
-- faster analytical queries
 
 ---
 
 # BI Dashboard
 
-The BI layer is implemented using **Python + Pyecharts**.
+Python + Pyecharts
 
-Key metrics visualized:
+Includes:
 
-- Daily GMV Trend
-- Daily Order Count
-- Daily User Count
-- Refund Amount Trend
-- Top Categories by GMV
-- Top Shops by GMV
+- GMV Trend  
+- Order Count  
+- User Count  
+- Refund Trend  
+- Top Categories  
+- Top Shops  
 
 ---
 
@@ -232,211 +263,68 @@ Key metrics visualized:
 
 # Analytical Metrics
 
-### Core Metrics
-
-```
-GMV (Gross Merchandise Volume)
-Order Count
-User Count
-Refund Amount
-Average Order Value
-Refund Rate
-```
-
-### Ranking Metrics
-
-```
-Top Categories by GMV
-Top Shops by GMV
-```
+GMV  
+Order Count  
+User Count  
+Refund Amount  
+Average Order Value  
+Refund Rate  
 
 ---
 
-# BI Visualization Pipeline
+# BI Pipeline
 
-```
-ADS Tables
-     ↓
-CSV Export
-     ↓
-Python Data Processing (Pandas)
-     ↓
-Pyecharts Visualization
-     ↓
-Interactive HTML Dashboard
-```
-
-Final dashboard output:
-
-```
-dashboard.html
-```
+ADS → CSV → Pandas → Pyecharts → HTML
 
 ---
 
 # Repository Structure
 
-```
-ecommerce-data-warehouse
-│
-├── sql
-│   ├── ads
-│   ├── dwd
-│   └── dws
-│
-├── build_dashboard.py
-├── dashboard.html
-├── README.md
-│
-└── docs
-    ├── mermaid-diagram.png
-    ├── mermaid-diagram_2.png
-    └── dashboard_preview_1.png
-```
+ecommerce-data-warehouse  
+├── sql  
+├── build_dashboard.py  
+├── dashboard.html  
+├── README.md  
+└── docs  
 
 ---
 
 # How to Run
 
-### 1 Generate Dataset
-
-Use the simulator repository:
-
-https://github.com/learner2638/ecommerce-data-simulator
-
----
-
-### 2 Upload Data to HDFS
-
-Upload generated CSV files to HDFS and create corresponding Hive tables.
-
----
-
-### 3 Run Data Warehouse Pipeline
-
-Execute SQL scripts sequentially:
-
-```
-ODS → DWD → DWS → ADS
-```
-
-Processing engines:
-
-```
-Hive SQL
-Spark SQL
-```
-
----
-
-### 4 Export BI Data
-
-Export ADS tables to CSV format.
-
----
-
-### 5 Build Dashboard
-
-Run:
-
-```
-python build_dashboard.py
-```
-
-This generates an **interactive HTML dashboard**.
-
----
-
-# Engineering Details
-
-### Parallel Data Generation
-
-```
-workers = 6
-batch_size = 300000
-```
-
-This enables efficient generation of **tens of millions of records**.
-
----
-
-### Data Volume
-
-| Dataset | Size |
-|------|------|
-| Orders | 10M |
-| Order Items | 25M |
-| Total Records | ~35M |
-
----
-
-### Storage Size
-
-The generated dataset occupies **multiple gigabytes**, depending on storage format.
+1. Generate dataset  
+2. Upload to HDFS  
+3. Run SQL (ODS → DWD → DWS → ADS)  
+4. Export data  
+5. Build dashboard  
 
 ---
 
 # Practical Skills Demonstrated
 
-This project demonstrates core **data engineering skills**:
-
-- large-scale synthetic data generation
-- offline data warehouse architecture
-- Hive-based analytical processing
-- layered warehouse modeling
-- BI visualization development
-- end-to-end analytics pipeline design
+- data warehouse modeling  
+- Spark / Hive processing  
+- data skew optimization  
+- data quality design  
+- metric system design  
+- workflow orchestration  
 
 ---
 
 # Future Improvements
 
-Possible future enhancements include:
-
-### Real-Time Data Pipeline
-
-```
-Kafka
-Flink
-Spark Streaming
-```
-
-### Query Engine Integration
-
-```
-Presto
-Trino
-ClickHouse
-```
-
-### Workflow Orchestration
-
-```
-Apache Airflow
-```
-
-### Advanced BI Platform
-
-```
-Apache Superset
-Metabase
-Tableau
-```
-
-### Containerized Deployment
-
-```
-Docker
-Docker Compose
-```
+Kafka / Flink  
+Trino / ClickHouse  
+Superset / Tableau  
+Docker  
 
 ---
 
 # Data Source
 
-The dataset used in this project is generated using the custom **E-commerce Data Simulator** developed by the author.
-
 https://github.com/learner2638/ecommerce-data-simulator
+
+---
+
 # Author
 
-Developed as part of a **data engineering learning and experimentation process**, focusing on building a simplified end-to-end analytics pipeline.
+Built as a data engineering project focusing on end-to-end pipeline and engineering practices.
